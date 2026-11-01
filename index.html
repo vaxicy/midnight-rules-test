@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>午夜规矩 · 6 号楼住户须知</title>
+<meta name="description" content="规则怪谈互动文字游戏：50 幕、13 种结局、97 种死法。凌晨两点十一分，电梯按钮上方贴着一张手写纸，13 条规矩。">
+<meta property="og:title" content="午夜规矩 · 13 条规矩，第 13 条是「放回原处」">
+<meta property="og:description" content="50 幕 · 13 种结局 · 97 种死法。每个选择看着都对，只有一条能活。">
+<meta name="theme-color" content="#0f1412">
+<style>
+  :root{
+    --bg:#0f1412; --card:#151b18; --line:#25302b;
+    --ink:#d8d3c8; --sub:#8d9a92; --muted:#5c6a62;
+    --brand:#33544a; --brand-2:#7ea394; --die:#a8352c; --gold:#c9a227;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;}
+  body{background:var(--bg);color:var(--ink);overflow-x:hidden;
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Songti SC","Microsoft YaHei",serif;
+    line-height:1.85;-webkit-font-smoothing:antialiased;}
+  .wrap{width:100%;max-width:480px;margin:0 auto;min-height:100vh;padding:20px 18px 36px;display:flex;flex-direction:column;}
+  .top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px;}
+  .top .name{font-size:13px;letter-spacing:3px;color:var(--gold);white-space:nowrap;}
+  .dots{display:flex;gap:5px;margin-bottom:9px;} .dots i{width:7px;height:7px;border-radius:50%;background:#243029;}
+  .dots i.on{background:var(--gold);}
+  .meta{display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0;}
+  .ep{font-size:11px;color:#93a89d;background:#182120;border:1px solid #243029;padding:3px 9px;border-radius:14px;
+      font-variant-numeric:tabular-nums;}
+  .rulebtn{font-size:11px;color:var(--gold);background:#1a221d;border:1px solid #33413a;padding:3px 10px;
+      border-radius:14px;cursor:pointer;letter-spacing:1px;}
+  .rulebtn:active{background:#22302a;}
+  .toast{position:fixed;top:16%;left:50%;transform:translateX(-50%);background:#182120;border:1px solid var(--gold);
+    color:var(--gold);padding:9px 24px;border-radius:20px;letter-spacing:3px;font-size:13px;z-index:99;
+    pointer-events:none;opacity:0;animation:tst 1.9s ease forwards;white-space:nowrap;}
+  @keyframes tst{0%{opacity:0;transform:translate(-50%,-8px);}15%{opacity:1;transform:translate(-50%,0);}
+    80%{opacity:1;transform:translate(-50%,0);}100%{opacity:0;transform:translate(-50%,0);}}
+  .bar{height:3px;background:#26332c;border-radius:2px;overflow:hidden;margin-bottom:16px;}
+  .bar>i{display:block;height:100%;width:0;background:var(--gold);transition:width .3s ease;}
+
+  .card{background:var(--card);border:1px solid var(--line);border-radius:4px;padding:18px 18px 18px 20px;
+    margin-bottom:16px;position:relative;}
+  .card::before{content:"";position:absolute;left:0;top:14px;bottom:14px;width:2px;background:var(--brand-2);opacity:.85;}
+  .where{font-size:11px;color:var(--brand-2);letter-spacing:1px;margin-bottom:8px;font-variant-numeric:tabular-nums;}
+  .story{font-size:15px;color:var(--ink);margin:0;}
+
+  .opt{display:block;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);
+    border-left:2px solid #33413a;border-radius:3px;padding:13px 15px;margin-bottom:10px;font-size:14.5px;
+    color:var(--ink);cursor:pointer;transition:border-color .15s,background .15s;line-height:1.6;}
+  .opt:active{background:#1b2420;} .opt:hover{border-left-color:var(--gold);}
+
+  .chapter{text-align:center;padding:26px 18px;}
+  .chapter .vol{font-size:12px;letter-spacing:4px;color:var(--gold);margin-bottom:10px;}
+  .chapter h2{font-size:23px;font-weight:800;letter-spacing:3px;margin:0 0 16px;color:#e6e1d6;}
+  .chapter .ci{font-size:14px;color:var(--sub);text-align:left;margin:0 0 20px;line-height:1.9;}
+  .chapter .go{width:100%;border:0;border-radius:3px;padding:13px;background:var(--brand);color:#dfe9e3;
+    font-size:15px;letter-spacing:2px;cursor:pointer;} .chapter .go:active{background:#2a4740;}
+
+  .cover{text-align:center;padding:26px 12px 18px;}
+  .cover .seal{font-size:12px;letter-spacing:6px;color:var(--gold);margin-bottom:14px;}
+  .cover h1{font-size:26px;font-weight:800;letter-spacing:2px;color:#e9e3d7;margin:0 0 12px;line-height:1.4;}
+  .cover .lead{font-size:14px;color:#9aa79f;margin-bottom:20px;line-height:1.9;}
+  .cover .notice{font-size:13px;color:#cfc7b6;background:#e8e1cf;border-radius:5px;padding:20px 18px;
+    text-align:left;margin-bottom:18px;line-height:1.95;font-family:"Kaiti SC",KaiTi,"Songti SC",serif;
+    box-shadow:0 8px 26px rgba(0,0,0,.45);transform:rotate(-.4deg);}
+  .cover .notice b{display:block;text-align:center;font-size:14px;letter-spacing:2px;margin-bottom:12px;color:#1d1a14;}
+  .cover .notice p{margin:0 0 6px;color:#2b2620;}
+  .cover .notice .more{color:#8a8272;letter-spacing:3px;text-align:center;margin-top:8px;}
+  .cover .rule{font-size:12.5px;color:#9aa79f;background:#141b18;border:1px solid #22302a;border-radius:4px;
+    padding:14px;text-align:left;margin-bottom:20px;line-height:1.85;}
+  .start{width:100%;border:0;border-radius:3px;padding:14px;background:var(--gold);color:#12160f;
+    font-size:16px;font-weight:700;letter-spacing:3px;cursor:pointer;} .start:active{background:#a8871f;}
+  .cover .disc{font-size:10.5px;color:#4d5b54;margin:18px 0 0;line-height:1.8;letter-spacing:.4px;}
+
+  .end{text-align:center;padding-top:5vh;margin:auto 0;}
+  .end .tag{display:inline-block;font-size:12px;font-weight:700;letter-spacing:2px;padding:5px 14px;
+    border-radius:18px;margin-bottom:14px;}
+  .end.die .tag{background:#2a1412;color:#d98f84;border:1px solid #4a211c;}
+  .end.life .tag{background:#12241c;color:#8fbfa4;border:1px solid #244236;}
+  .end .big{font-size:27px;font-weight:800;margin:6px 0 10px;letter-spacing:4px;}
+  .end.die .big{color:#e5a094;} .end.life .big{color:#b3ddc5;}
+  .end .reason{font-size:14.5px;background:var(--card);border:1px solid var(--line);border-radius:4px;
+    padding:16px;text-align:left;margin:14px 0 18px;line-height:1.95;}
+  .end .share{font-size:12.5px;color:#8d9a92;margin-bottom:18px;line-height:1.8;}
+  .again{width:100%;border:1px solid var(--gold);background:transparent;color:var(--gold);border-radius:3px;
+    padding:12px;font-size:14px;letter-spacing:2px;cursor:pointer;margin-bottom:10px;} .again:active{background:#1a221d;}
+  .rech{width:100%;border:1px solid #33413a;background:transparent;color:#93a89d;border-radius:3px;
+    padding:11px;font-size:13px;letter-spacing:1px;cursor:pointer;} .rech:active{background:#1a221d;}
+
+  /* 住户须知抽屉 */
+  .drawer{position:fixed;inset:0;background:rgba(6,9,8,.965);z-index:80;display:none;overflow-y:auto;
+    padding:24px 16px 48px;-webkit-overflow-scrolling:touch;}
+  .drawer.on{display:block;}
+  .drawer .paper{max-width:440px;margin:0 auto;background:#e8e1cf;color:#2b2620;border-radius:4px;
+    padding:22px 20px 26px;font-family:"Kaiti SC",KaiTi,"Songti SC",serif;
+    box-shadow:0 14px 50px rgba(0,0,0,.7);line-height:1.95;}
+  .drawer .paper h3{font-size:15px;letter-spacing:4px;text-align:center;margin:0 0 6px;color:#1d1a14;}
+  .drawer .paper .hint{font-size:11px;text-align:center;color:#8a8272;letter-spacing:1px;margin-bottom:16px;}
+  .drawer .paper ol{margin:0;padding-left:1.5em;}
+  .drawer .paper li{font-size:14px;margin-bottom:9px;color:#2b2620;}
+  .drawer .paper li.lock{color:#a9a190;letter-spacing:4px;font-size:13px;}
+  .drawer .paper .sign{text-align:right;font-size:11.5px;color:#8a8272;margin-top:18px;letter-spacing:1px;}
+  .drawer .close{display:block;width:100%;max-width:440px;margin:16px auto 0;background:#1a221d;
+    border:1px solid #33413a;color:#93a89d;border-radius:4px;padding:12px;font-size:13px;letter-spacing:2px;cursor:pointer;}
+
+  .foot{margin-top:auto;padding:20px 0 max(20px,env(safe-area-inset-bottom));font-size:10.5px;color:#4d5a53;
+    text-align:center;letter-spacing:.5px;}
+  .hide{display:none;}
+</style>
+</head>
+<body>
+<div class="wrap" id="wrap">
+  <div class="top"><div class="name">午夜规矩</div>
+    <div class="meta"><div class="ep" id="ep">02:11 · 第 0 幕</div>
+      <button class="rulebtn" id="ruleBtn" type="button">住户须知</button></div></div>
+  <div class="dots" id="dots"></div>
+  <div class="bar"><i id="bar"></i></div>
+
+  <section id="cover" class="cover">
+    <div class="seal">规 则 · 怪 谈</div>
+    <h1>这栋楼有 13 条规矩<br>第 13 条是「放回原处」</h1>
+    <div class="lead">凌晨两点十一分，你加完班回到刚租的老楼。<br>电梯按钮上方贴着一张手写纸。</div>
+    <div class="notice" id="coverNotice">
+      <b>6 号楼住户须知</b>
+      <p>一、本楼电梯只到 6 层。若电梯停在 7 层，不要出去，也不要抬头看楼层显示。</p>
+      <p>二、走廊声控灯不亮时，请原地站好，等它自己亮。不要跺脚，不要唱歌。</p>
+      <p>三、若有人在你身后喊你的名字，不要回头。声音再像，也不要。</p>
+      <div class="more">⋯ 其余十条已打码 ⋯</div>
+    </div>
+    <div class="rule">📜 五十幕，从 02:11 走到 05:30。规矩一共 13 条，随剧情分次解锁，<b>随时可以点顶栏「住户须知」查看</b>。每个选择看着都对，只有一条能活。共 13 种结局。</div>
+    <button class="start" id="startBtn">读 完 了</button>
+    <p class="disc">首次通关率很低，这不是设计缺陷<br>死了可从本卷重来 · 建议 16 岁以上</p>
+  </section>
+
+  <section id="chapter" class="hide chapter">
+    <div class="vol" id="cVol"></div><h2 id="cTitle"></h2>
+    <p class="ci" id="cIntro"></p><button class="go" id="cGo">续 卷</button>
+  </section>
+
+  <section id="scene" class="hide">
+    <div class="card"><div class="where" id="where"></div><p class="story" id="story"></p></div>
+    <div id="opts"></div>
+  </section>
+
+  <section id="end" class="hide end">
+    <span class="tag" id="endTag"></span><div class="big" id="endBig"></div>
+    <div class="reason" id="endReason"></div><div class="share" id="endShare"></div>
+    <button class="again" id="againBtn">↻ 重新走进这栋楼</button>
+    <button class="rech" id="rechBtn">从本卷重来</button>
+  </section>
+
+  <div class="foot">本作为虚构悬疑互动作品，人物、地点与情节均属虚构，不涉及任何真实事件或人物。</div>
+</div>
+
+<div class="drawer" id="drawer">
+  <div class="paper" id="paper">
+    <h3>6 号 楼 住 户 须 知</h3>
+    <div class="hint">请通读全文后再进入电梯</div>
+    <ol id="ruleList"></ol>
+    <div class="sign" id="ruleSign">—— 物业 · 1998 年 11 月</div>
+  </div>
+  <button class="close" id="drawerClose" type="button">收 起</button>
+</div>
+
+<script>
+/* ====== 13 条规矩（原文） ====== */
+const RULES=[
+ "本楼电梯只到 6 层。若电梯停在 7 层，不要出去，也不要抬头看楼层显示。",
+ "走廊声控灯不亮时，请原地站好，等它自己亮。不要跺脚，不要唱歌。",
+ "若有人在你身后喊你的名字，不要回头。声音再像，也不要。",
+ "凌晨 2:47 至 3:03，电梯会自行停靠。门开时，无论看见什么，都不要走出电梯。",
+ "405 是你的家。除 405 外，本层没有别的门牌。",
+ "三点以后有人敲门，不要开，也不要问「谁」。",
+ "楼道里遇到提塑料袋的老人，请让他先走。不要看袋子里的东西。",
+ "若有人让你帮忙找东西，请先问「你住几楼」。答不上来的，不要帮。",
+ "进门之前，务必回头确认门牌号。若门牌变成 406，请离开这一层，重走一遍。",
+ "水管有水流声却不出水时，不要拧第二下。",
+ "听见有人喊「着火了」，必须回答「我在」。否则你会被记成没逃出来的人。",
+ "天亮之前，不要照镜子，包括手机前置摄像头。",
+ "如果你读到了这一条——说明你已经看完了。请把这张纸放回原处。"
+];
+/* 节点 → 解锁条数（取已到达的最深一档） */
+const RULE_UNLOCK={n1:3,n10:6,n20:9,n26:11,n43:13};
+
+const VOLS=[null,["卷 一","入 楼","02:11。写字楼的灯一层层灭下去，你是最后一个走的。骑到楼下才想起，搬进来第三天，你还没在夜里回过这里。铁门的门禁坏了，报修了两次都没人来。门虚掩着，缝里透出光。"],
+ ["卷 二","电 梯","02:40。电梯很旧，按钮上有一层薄薄的油光。按钮上方贴着一张 A4 纸，纸边已经起毛。你从头读到尾——十三条。最后一条换了一支笔，字在抖。"],
+ ["卷 三","走 廊","03:03。钢索声停了。整栋楼安静得像一间空屋。你站在 405 门口，钥匙插进去，转不动。"],
+ ["卷 四","四 零 五","04:10。你终于进了门。灯一开，你就知道不对——早上出门时，桌子是靠着窗的。"],
+ ["卷 五","天 亮","05:02。天边泛白。你站在走廊里，电梯门开着，里面很安静。你突然想明白，今晚最难的一步不是别的——是下楼。"]];
+</script>
+<script id="dataNodes">
+const NODES={
+ /* ===== 卷一 入楼（n1–n9） ===== */
+ n1:{v:1,t:"02:11",where:"楼下 · 铁门",story:"铁门虚掩着，门轴锈得厉害。你伸手要推，才看见门内侧贴着一张纸——不是广告，手写，边角被雨泡过。楼上的声控灯亮了一下，又灭了。",
+  o:[{t:"先把纸上的字看完再进门",go:"n2"},{t:"推门进去，纸回头再看",end:"E_DOOR"},{t:"按对讲机，让房东下来开",end:"E_NAME"}]},
+ n2:{v:1,t:"02:18",where:"一楼 · 铁门内侧",story:"纸上只有三条，标题是《6 号楼住户须知》。字很工整，写到第三条时停了，下面空出一大截，像是撕掉的。你把三条读完，纸的背后还有一道铅笔印——有人在这张纸下面垫着写过字。",
+  o:[{t:"按纸上的字面记住这三条，进门",go:"n3"},{t:"拍照存手机，纸就别管了",end:"E_LAMP"},{t:"把纸揭下来，看看底下垫的那张",end:"E_TURN"}]},
+ n3:{v:1,t:"02:24",where:"一楼 · 电梯口",story:"电梯门开着，里面站着一位老人，手里提着两个塑料袋，袋口扎得很紧。他看见你，往旁边让了让，但没有下来。电梯一直在等，门缝里的光一动一动。",
+  o:[{t:"侧身等他先出，低头不看袋子",go:"n4"},{t:"看他提着两袋，伸手帮他一把",end:"E_DOOR"},{t:"站着不动，等他自己下来",end:"E_LAMP"}]},
+ n4:{v:1,t:"02:31",where:"电梯内",story:"老人出去了，袋子摩过你的手背，凉的。电梯里只剩你一个人。按钮上方贴着完整的一张纸——十三条，从「本楼电梯只到 6 层」一直到「请把这张纸放回原处」。第十三条的字明显不是同一个人写的。",
+  o:[{t:"从第一条读到第十三条，读完把纸按回原位",go:"n5"},{t:"读到第六条，先按 6 层上去",end:"E_7F"},{t:"把纸揭下来，折好塞进包里",end:"E_TURN"}]},
+ n5:{v:1,t:"02:36",where:"电梯内",story:"你把纸按回墙上，指腹蹭到一层灰。电梯上行到 5 层，楼层灯闪了一下——不是那种接触不良的闪，是有人在外面按住按钮的闪。你抬头，看着数字从 5 往上走。",
+  o:[{t:"站定，看着门，不动",go:"n6"},{t:"伸手按住「开门」",end:"E_DOOR"},{t:"低头看手机，假装没注意",end:"E_LAMP"}]},
+ n6:{v:1,t:"02:39",where:"电梯内",story:"隔着门，有人喊了一声你的小名。是只有你妈才会那么喊的腔调，尾音往下掉。声音贴着门缝进来，很近，就在门外那半米。电梯还在上。",
+  o:[{t:"不动，不转身，等门自己开",go:"n7"},{t:"应一声「哎」",end:"E_NAME"},{t:"转身面对门，看清楚是谁",end:"E_TURN"}]},
+ n7:{v:1,t:"02:41",where:"6 层 · 走廊",story:"门开了，走廊灯亮着，一盏不缺。整层楼只有一扇门，门牌 405。地砖被拖过，还是湿的，水痕一直到你家门口。你站在电梯口，脚还没迈出去。",
+  o:[{t:"走出去，脚先落地再看别的",go:"n8"},{t:"探出半个身子，先看清走廊",end:"E_LAMP"},{t:"想等门关上再出去",end:"E_DOOR"}]},
+ n8:{v:1,t:"02:43",where:"6 层 · 电梯口",story:"你下意识回头看了一眼面板，想按 7 层——这栋楼是七层，你搬来那天房东说过。面板上有 1 到 6，还有一个空位，螺丝孔还在，但按钮没了。",
+  o:[{t:"收回手，放弃这个念头",go:"n9"},{t:"按一按那个空位",end:"E_7F"},{t:"问电梯一句「为什么没有 7」",end:"E_TURN"}]},
+ n9:{v:1,t:"02:45",where:"405 门口",story:"钥匙插进去，转了半圈，卡住。你使劲拧，锁芯里发出很哑的声音。手机在口袋里响了一下，是 02:46 的天气提醒。走廊很长，你背后是电梯，前面是门。",
+  o:[{t:"先按规矩回头看门牌，再开门",go:"n10"},{t:"抬高钥匙，用力拧开",end:"E_DOOR"},{t:"先敲门，问一句「有人吗」",end:"E_NAME"}]},
+
+ /* ===== 卷二 电梯（n10–n19） ===== */
+ n10:{v:2,t:"02:47",where:"405 室内",story:"门开了。你反锁、上链、开灯。刚把包放下，走廊里传来电梯运行的钢索声——它在下行。这栋楼只有你一个人还没睡，而现在是 02:47。",
+  o:[{t:"不开门，贴着门听",go:"n11"},{t:"开门出去看一眼",end:"E_DOOR"},{t:"趴到猫眼上看",end:"E_MIRROR"}]},
+ n11:{v:2,t:"02:52",where:"405 室内",story:"钢索声停在 4 层。过了一会，门开了——不是你家门，是电梯门。你能听见那一声，从楼道尽头传过来，很轻，但很清楚。有人从电梯里走出来了。",
+  o:[{t:"退回屋里，把门链挂好",go:"n12"},{t:"拉开门缝，看是谁",end:"E_DOOR"},{t:"拿起手机，叫物业上来",end:"E_NAME"}]},
+ n12:{v:2,t:"02:55",where:"405 室内",story:"你挂上门链，声音却没往你家走。它停在楼梯口的方向，然后是很长的一阵安静。安静里混着一点味道——像是什么东西烧糊了，从门缝底下渗进来。",
+  o:[{t:"锁好门，退到屋子中间",go:"n13"},{t:"出声问一句「有人吗」",end:"E_NAME"},{t:"把门留一条缝，好看清外面",end:"E_DOOR"}]},
+ n13:{v:2,t:"03:03",where:"405 室内",story:"钢索声彻底停了。你数着呼吸，数到一百八十下，才敢动。墙上的钟指着 03:03。你忽然想起纸上写的「2:47 至 3:03」，手指尖有点凉。",
+  o:[{t:"再等三分钟，等这栋楼彻底静下来",go:"n14"},{t:"立刻开门下楼看看",end:"E_DOOR"},{t:"给房东打电话问清楚",end:"E_NAME"}]},
+ n14:{v:2,t:"03:09",where:"6 层 · 走廊",story:"你渴得厉害。冰箱是空的，你想下楼买瓶水。电梯门在你面前开着，里面空无一人，灯亮着。楼层显示停在 6。",
+  o:[{t:"看一眼楼层显示是 6，然后进去",go:"n15"},{t:"抬头确认显示，再进",end:"E_7F"},{t:"不坐电梯，走楼梯下去",end:"E_CROWD"}]},
+ n15:{v:2,t:"03:14",where:"电梯内",story:"门关上了。电梯角落里站着一个小孩，背对着你，穿一件蓝白校服。他没动。下降了两层，他忽然开口：「几点了？」",
+  o:[{t:"看手机，报时间，不看他",go:"n16"},{t:"弯腰看一眼他的脸",end:"E_MIRROR"},{t:"反问他住几号楼",end:"E_NAME"}]},
+ n16:{v:2,t:"03:18",where:"电梯内",story:"你刚报完时间，灯灭了。不是闪，是灭。整部电梯只剩下手机屏幕那一小块光。你听见自己的呼吸，还有另一处，很轻的呼吸。",
+  o:[{t:"立刻站定，把屏幕朝下，等",go:"n17"},{t:"跺两下脚，等灯自己亮",end:"E_LAMP"},{t:"举着手机照亮，找那个孩子",end:"E_MIRROR"}]},
+ n17:{v:2,t:"03:22",where:"电梯内",story:"黑暗里，有人开始唱歌。调子很老，词听不清，只听见反复的三个字，唱得很慢，像在哄谁睡觉。声音是从角落那个位置传来的。",
+  o:[{t:"一动不动，数自己的呼吸",go:"n18"},{t:"跟着哼一句，表示自己没有恶意",end:"E_LAMP"},{t:"捂住耳朵，摸着墙走出去",end:"E_TURN"}]},
+ n18:{v:2,t:"03:27",where:"电梯内",story:"歌唱到一半停了，\n灯亮了。角落里没有人。地上多了一个塑料袋，扎得很紧，和一楼那位老人手里的一模一样。电梯还停在 1 层，门没开。",
+  o:[{t:"把袋子挪到角落，按 6 层上去",go:"n19"},{t:"打开袋子看看",end:"E_PIPE"},{t:"拎起袋子，带回自己家",end:"E_DOOR"}]},
+ n19:{v:2,t:"03:33",where:"6 层 · 走廊",story:"电梯门开，走廊尽头有人在烧纸。一小堆，火很小，被风压在角落里。烧纸的人蹲着，背对你。地上摆着十几个纸杯，摆了很长一排。",
+  o:[{t:"走过去，不问、不踩、不绕得太远",go:"n20"},{t:"出声喊一句「这里不能烧」",end:"E_NAME"},{t:"退回电梯，先不出去",end:"E_7F"}]},
+
+ /* ===== 卷三 走廊（n20–n31） ===== */
+ n20:{v:3,t:"03:34",where:"6 层 · 走廊",story:"烧纸的人抬起头，是你房东。他手里捏着一沓纸钱，烧得很小心，一张一张往里放。看见你，他点了点头，像是早就在等你回来。",
+  o:[{t:"点头致意，继续往前走",go:"n21"},{t:"问他这是烧给谁的",end:"E_NAME"},{t:"蹲下来帮他一起烧",end:"E_TURN"}]},
+ n21:{v:3,t:"03:36",where:"6 层 · 走廊",story:"他忽然说：「上一任租客也读过那张纸。」火苗把他的话照得一段一段的。他没看你，一直盯着火。",
+  o:[{t:"只问一句「他住几楼」",go:"n22"},{t:"问「他搬走了吗」",end:"E_406"},{t:"问「他怎么了」",end:"E_NAME"}]},
+ n22:{v:3,t:"03:39",where:"6 层 · 走廊",story:"他张了张嘴，没答上来。火快灭了，纸灰卷起来，落在他的鞋面上。他站起来，把剩下的半沓纸钱塞进兜里，转身就走，一句话也没留。",
+  o:[{t:"把剩下那一点纸烧完，别用脚踩",go:"n23"},{t:"用脚把火踩灭",end:"E_TURN"},{t:"跟着他走，问清楚",end:"E_406"}]},
+ n23:{v:3,t:"03:43",where:"6 层 · 走廊",story:"你蹲下把最后几张纸放进火里。火苗蹿了一下，照亮走廊尽头——那里的门牌闪了闪，先显示 406，又变回 405。你眨了下眼，它还是 405。",
+  o:[{t:"记下来，先回自己门口确认门牌",go:"n24"},{t:"走过去，推一推那扇门",end:"E_406"},{t:"当作看错了，回屋",end:"E_406"}]},
+ n24:{v:3,t:"03:46",where:"6 层 · 走廊",story:"一个老太太站在你家门边，攥着一张照片，照片边角被她捏得发白。她抬头看你：「帮我找找我孩子，好不好。」她的手很干，指甲缝里有灰。",
+  o:[{t:"先问一句「您住几楼」",go:"n25"},{t:"直接答应，问她孩子长什么样",end:"E_CROWD"},{t:"说帮不了，请她走",end:"E_NAME"}]},
+ n25:{v:3,t:"03:49",where:"6 层 · 走廊",story:"「五楼，五楼，就在五楼。」她说得很急，重复了三遍。可这栋楼的电梯只到 6 层，你再清楚不过——你搬来那天，搬家师傅抱怨过一句。",
+  o:[{t:"告诉她电梯只到 6 层，让她走楼梯",go:"n26"},{t:"陪她坐电梯下去找",end:"E_CROWD"},{t:"说这楼没有五楼",end:"E_406"}]},
+ n26:{v:3,t:"03:52",where:"6 层 · 走廊",story:"她没再说话，只是把手里那张对折的黄纸塞给你。纸很薄，折得很整齐。她转身往走廊尽头走，走进去的地方没有门。",
+  o:[{t:"收下，不看，塞进口袋",go:"n27",give:"paper"},{t:"当场把纸展开",end:"E_TURN"},{t:"折好放在墙角，说一句「我不要」",go:"n27"}]},
+ n27:{v:3,t:"03:56",where:"405 室内",story:"03:56。有人敲门，敲了三下，很轻，中间隔得很均匀。你站在门内，看着门把手。门缝底下没有影子。",
+  o:[{t:"不出声，退到屋子中间",go:"n28"},{t:"问一句「谁」",end:"E_NAME"},{t:"从猫眼往外看",end:"E_MIRROR"}]},
+ n28:{v:3,t:"03:58",where:"405 室内",story:"敲门停了。三秒钟后，有钥匙插进锁孔——很慢，一点一点往里推。金属蹭着金属，声音在你耳朵里放大。锁芯转了一格，被门链挡住了。",
+  o:[{t:"挂紧门链，退到阳台方向",go:"n29"},{t:"用身体顶住门",end:"E_DOOR"},{t:"大喊「有人闯入」",end:"E_NAME"}]},
+ n29:{v:3,t:"04:01",where:"405 室内",story:"钥匙停了。门缝底下，一张纸被推进来，停在脚边。你弯腰捡起来——是你的字迹，一行字，写得很急：「不要开。」",
+  o:[{t:"用纸巾包起来收好，绝不开门",go:"n30"},{t:"拉开门追出去",end:"E_DOOR"},{t:"朝门外喊回去",end:"E_NAME"}]},
+ n30:{v:3,t:"04:04",where:"6 层 · 走廊",story:"你提着垃圾袋出门，反手带上门。走两步，想起该确认门牌，回头——门牌是 406。你手里还提着垃圾袋，走廊的尽头没有电梯。",
+  o:[{t:"站住，不出声，退到楼梯口重走这一层",go:"n30b"},{t:"推门进去看看",end:"E_406"},{t:"站在原地，等它变回来",end:"E_406"}]},
+ n30b:{v:3,t:"04:06",where:"楼梯间",story:"楼梯间的窗对着对面楼。你数了一眼——整栋楼，一盏灯都没有。十二层，没有一扇窗是亮的。垃圾桶旁边堆着几袋没扔的垃圾，扎得很紧。",
+  o:[{t:"数清窗户数就走，不在窗边停",go:"n31"},{t:"一直数下去，数到十三",end:"E_CROWD"},{t:"推开窗，看看楼下",end:"E_7F"}]},
+ n31:{v:3,t:"04:09",where:"楼梯间",story:"楼下突然有人喊：「着火了！着火了！」声音很急，喊得破了音。喊完一遍，又喊一遍，然后开始一个一个喊名字，喊得很清楚。",
+  o:[{t:"大声答一句「我在」",go:"n32"},{t:"往下跑",end:"E_7F"},{t:"躲在楼梯拐角，不吭声",end:"E_NAME"}]},
+
+ /* ===== 卷四 405（n32–n42） ===== */
+ n32:{v:4,t:"04:12",where:"405 室内",story:"「我在。」你答得很响，走廊回了一下。喊声停了，名字也停了。整栋楼重新安静下来，安静得像刚才什么都没有发生。你回到屋里。",
+  o:[{t:"关掉大灯，只留一盏小灯",go:"n33"},{t:"走到窗边，看楼下有没有火",end:"E_7F"},{t:"把所有灯都打开",end:"E_LAMP"}]},
+ n33:{v:4,t:"04:17",where:"405 室内",story:"小灯亮着。你看了一眼屋子——桌子不在原来的位置了。早上出门时它靠着窗，现在它靠着墙，桌角还压着一小块没擦干净的水印。",
+  o:[{t:"什么都不动",go:"n34"},{t:"把桌子挪回窗边",end:"E_406"},{t:"拍张照发给房东问",end:"E_NAME"}]},
+ n34:{v:4,t:"04:22",where:"405 室内",story:"手机没信号，一格都没有。你觉得脸有点凉，想看看自己是不是吓白了。手机在手里，屏幕黑着，能照出人。",
+  o:[{t:"忍住，把手机扣在桌上",go:"n35"},{t:"点亮前置摄像头看看",end:"E_MIRROR"},{t:"去卫生间照镜子",end:"E_MIRROR"}]},
+ n35:{v:4,t:"04:26",where:"厨房",story:"厨房里有水声。你走过去，水龙头是关的，但管子里有流水的声音，很稳，一直在流。水槽是干的。",
+  o:[{t:"记住这件事，别碰水龙头",go:"n36"},{t:"拧一下试试",end:"E_PIPE"},{t:"去关掉总阀",end:"E_PIPE"}]},
+ n36:{v:4,t:"04:29",where:"厨房",story:"水声变了，不再是流水，像有什么东西在管子里爬。一下，一下，很有节奏，从墙里往水槽的方向过来。你退了一步，脚碰到橱柜。",
+  o:[{t:"离开厨房，把门带上",go:"n37"},{t:"敲两下管子",end:"E_PIPE"},{t:"趴下去看水槽下面",end:"E_PIPE"}]},
+ n37:{v:4,t:"04:33",where:"客厅",story:"客厅的电视自己开了。屏幕上是旧新闻的画面，画质发黄，右下角的日期是 1998 年 11 月。声音很小，像隔着一层水。",
+  o:[{t:"只看不听，记住画面",go:"n38"},{t:"把声音调大",end:"E_NAME"},{t:"换台，或者关掉",end:"E_LAMP"}]},
+ n38:{v:4,t:"04:36",where:"客厅",story:"画面里是一栋楼，楼下的空地被围了起来，地上摆着一排担架。下面的字幕打出一行字：「6 号楼火灾，13 人遇难」。镜头扫过去，担架盖着白布。",
+  o:[{t:"记住数字 13",go:"n39"},{t:"数一数屏幕里到底有几副担架",end:"E_CROWD"},{t:"举起手机拍下来",end:"E_MIRROR"}]},
+ n39:{v:4,t:"04:40",where:"卧室",story:"衣柜半开着。里面挂着一件深灰色外套，肩线很直，不是你的。你伸手比了比，尺码正好。衣服是干的，领口有一点很淡的樟脑味。",
+  o:[{t:"挂回去，把柜门关上",go:"n40"},{t:"试穿一下",end:"E_MIRROR"},{t:"扔到门外去",end:"E_DOOR"}]},
+ n40:{v:4,t:"04:45",where:"卧室",story:"外套口袋里有一张照片，烧掉了半边。剩下的半边是 13 个人，站成一排，背后就是这栋楼。烧掉的那侧，正好是站在最边上那个人。",
+  o:[{t:"只看三秒，收起来，不再展开",go:"n41"},{t:"凑近细看，找自己在不在里面",end:"E_MIRROR"},{t:"想办法把烧掉的部分拼出来",end:"E_CROWD"}]},
+ n41:{v:4,t:"04:49",where:"卧室",story:"你把照片收进口袋。手指碰到口袋深处，摸到那张对折的黄纸——老太太塞给你的那张，你一直没打开。照片上的人，你在今晚的楼里都见过。",
+  o:[{t:"不动声色，把照片放回外套口袋",go:"n42"},{t:"挨个对照记忆，认出他们是谁",end:"E_CROWD"},{t:"把照片撕掉",end:"E_TURN"}]},
+ n42:{v:4,t:"04:53",where:"卧室",story:"你又把照片拿出来数了一次。十三个人。再数一次，十四个。再数一次，十二个。你盯着照片，照片上的人也盯着一个方向——不是镜头，是你身后的门。",
+  o:[{t:"不再数，塞回外套口袋",go:"n43"},{t:"数第四次，一个一个点过去",end:"E_CROWD"},{t:"拿笔在照片背后标号",end:"E_TURN"}]},
+
+ /* ===== 卷五 天亮（n43–n49） ===== */
+ n43:{v:5,t:"04:56",where:"405 室内",story:"天边泛白。你把外套穿好，把手机和钥匙装进口袋，站在门口。走之前，你得先想清楚一件事——今晚从这扇门出去，要用哪种方式下楼。",
+  o:[{t:"先把这件事想清楚，再开门",go:"n44"},{t:"直接按电梯，越快越好",end:"E_CROWD"},{t:"去阳台看看天是不是真的亮了",end:"E_LAMP"}]},
+ n44:{v:5,t:"05:02",where:"6 层 · 走廊",story:"电梯到了，门开着。里面站着十三个人，很安静，全都面向门外，没有人看你。中间空出一个位置，大小刚好站得下一个人。",
+  o:[{t:"不进电梯，转身走消防通道",go:"n45"},{t:"走进去",end:"E_CROWD"},{t:"客气一句「你们先下」",end:"E_NAME"}]},
+ n45:{v:5,t:"05:08",where:"楼梯间",story:"消防通道的门推开，楼梯很窄，水泥的。你往下走，一层，两层——走到第六层，抬头一看，还是 6 层。楼梯间里的灯泡在头顶嗡嗡响。",
+  o:[{t:"在心里默数，不数出声",go:"n46"},{t:"数出声来，免得数错",end:"E_CROWD"},{t:"停下来，看看窗外到几层了",end:"E_7F"}]},
+ n46:{v:5,t:"05:14",where:"楼梯间",story:"下到第五层，楼下有人在点名字。一个接一个，念得很慢，念完一个停两秒。你听不清念的是谁，但那节奏很熟悉——像点名，像在确认谁还在。",
+  o:[{t:"快步往下走，不回应",go:"n47"},{t:"答应一声，表示自己在",end:"E_NAME"},{t:"停住脚步，等念完",end:"E_CROWD"}]},
+ n47:{v:5,t:"05:19",where:"1 层 · 铁门",story:"铁门锁着。门上那张《住户须知》已经褪成空白，一个字都没有。门缝里透进天光，外面有环卫车经过的声音。你伸手推了推，门纹丝不动。",
+  o:[{t:"把口袋里那张黄纸贴在门上",go:"n48a",need:"paper"},{t:"用钥匙在门上把记得的规矩刻一遍",go:"n48b"},{t:"转身回楼里，找别的出口",end:"E_406"},{t:"用肩膀去撞门",end:"E_DOOR"}]},
+ n48a:{v:5,t:"05:25",where:"1 层 · 铁门",story:"黄纸贴上去的一瞬间，门缝里的光变了——不再是一条线，是很宽的一片。楼上有十三扇窗同时熄灭，像有人一层一层把灯关了。门开着。",
+  o:[{t:"走出去，不回头",go:"n49"},{t:"回头看一眼这栋楼",end:"E_TURN"}]},
+ n48b:{v:5,t:"05:25",where:"1 层 · 铁门",story:"你用钥匙尖在铁门上一条一条刻。锈很厚，刻得很慢，手指被划破了也没停。刻到第十三条时，锁「咔」地响了一声，门开了。",
+  o:[{t:"走出去，不回头",go:"n49"},{t:"回头看一眼这栋楼",end:"E_TURN"}]},
+ n49:{v:5,t:"05:30",where:"楼下 · 街上",story:"05:30。街上开始有环卫车，远处有早点摊的灯。你站在楼下，抬头——7 层的窗户亮着一盏灯。这栋楼只有六层，你知道的。",
+  o:[{t:"对着那扇窗说一句「我贴回去了」",end:"E_OUT",need:"paper"},{t:"把记得的十三条抄在纸上，贴回铁门",end:"E_KEEPER"},{t:"拦一辆车走人，不再想",end:"E_DAWN"},{t:"走回去，按 7 层上去看看",end:"E_14"}]}
+};
+</script>
+
+<script id="dataEnd">
+const END={
+ E_7F:{type:"die",title:"七 层",text:"你抬头看了楼层显示。它亮着 7——而这一栋楼，七层在 1998 年就烧塌了。电梯停在那里，门开着，外面是黑的，黑得很整，像墙。你迈了一步。你倒在了 __T__。"},
+ E_LAMP:{type:"die",title:"灯 灭",text:"灯没有再亮。你等了很久，等到眼睛适应了黑，才发现走廊比刚才宽——宽得多，宽到你已经不知道自己站在哪儿。有人在很远的地方跺脚，想让灯亮起来。你倒在了 __T__。"},
+ E_TURN:{type:"die",title:"回 头",text:"你回头了。身后站着的人和你一样高，穿一样的衣服，只是脸的方向是反的。他很客气，往旁边让了让，给你腾出位置。你倒在了 __T__。"},
+ E_DOOR:{type:"die",title:"门 开 了",text:"门开了。门外的人说了声谢谢，声音很轻，然后就进来了——没有换鞋，没有看你，径直走到屋子最里面，站定。你倒在了 __T__。"},
+ E_MIRROR:{type:"die",title:"镜 中 人",text:"屏幕里的你慢了半拍。你以为是自己眼花，又看了一眼——这一次它快了半拍。第三次，它没有动，只是看着你。你倒在了 __T__。"},
+ E_PIPE:{type:"die",title:"管 子",text:"第二下拧开，管子里终于出声了。出来的不是水。你听见那东西落到水槽里，很湿，很沉，然后是第二声，第三声。你倒在了 __T__。"},
+ E_406:{type:"die",title:"四 零 六",text:"你推开了那扇门。屋里的灯亮着，家具摆放和你家一模一样——除了沙发上坐着一个人，正在等你回来。他很自然地抬起头：「怎么才回。」你倒在了 __T__。"},
+ E_NAME:{type:"die",title:"点 名",text:"名单上多了一行，字迹是你的。念名字的人顿了一下，然后很清楚地念出来——你听得很清楚，因为那就是你的名字。你倒在了 __T__。"},
+ E_CROWD:{type:"die",title:"十 三 人",text:"你站进了那个位置。门关上，你抬手想按 1 层，才发现面板上根本没有按钮——从来就没有。十三个人很安静，谁也没有动。你倒在了 __T__。"},
+ E_DAWN:{type:"life",title:"天 亮",text:"你活着出来了。早点摊的蒸汽糊在脸上，是热的。你走到路口，忍不住回头看了一眼——7 层那扇窗的灯，还亮着。你没敢再看第二眼。全剧终。"},
+ E_KEEPER:{type:"life",title:"新 守 则",text:"你在楼下找了张纸，把十三条一条一条抄下来，贴回铁门上。第二天，有人搬进了 405，在电梯里读到一张手写纸，十三行，字迹很整齐。第十三条下面，多了一行新的笔迹。全剧终。"},
+ E_14:{type:"life",title:"第 十 四 条",text:"你没有走。你按了 7 层，电梯上去了，门开了，里面亮着灯。第二天，铁门上那张须知多了一条——第十四条：不要按 7 层。字迹很抖。全剧终。"},
+ E_OUT:{type:"life",title:"出 口",text:"你对着 7 层那扇窗说完那句话，灯灭了。不是关掉，是那种「终于可以熄灭」的灭法。你转身走了很久，才发现口袋里那张黄纸不见了——它大概回到了原来的地方。全剧终。"}
+};
+</script>
+
+<script id="dataDth">
+
+/* 每条死法的专属标题（死亡页大字）。缺省沿用 END 的标题。 */
+const DTH_TITLE={
+ "n1:1":"门 后",
+ "n1:2":"门 牌",
+ "n2:1":"六 层",
+ "n2:2":"名 单",
+ "n3:1":"袋 子",
+ "n3:2":"等 你",
+ "n4:1":"翻 页",
+ "n4:2":"第 一 条",
+ "n5:1":"水 圈",
+ "n5:2":"鞋 尖",
+ "n6:1":"回 声",
+ "n6:2":"影 子",
+ "n7:1":"半 身",
+ "n7:2":"同 层",
+ "n8:1":"空 位",
+ "n8:2":"七 层",
+ "n9:1":"回 来 了",
+ "n9:2":"有",
+ "n10:1":"十 三 人",
+ "n10:2":"猫 眼",
+ "n11:1":"水 带",
+ "n11:2":"六 楼",
+ "n12:1":"都 在",
+ "n12:2":"门 缝",
+ "n13:1":"水 面",
+ "n13:2":"里 面",
+ "n14:1":"第 七 个",
+ "n14:2":"楼 梯 门",
+ "n15:1":"校 服",
+ "n15:2":"转 身",
+ "n16:1":"两 下 脚",
+ "n16:2":"两 双 鞋",
+ "n17:1":"你 的 名 字",
+ "n17:2":"灰",
+ "n18:1":"尺 码",
+ "n18:2":"空 袋",
+ "n19:1":"最 后 一 张",
+ "n19:2":"向 下",
+ "n20:1":"也 烧 给 你",
+ "n20:2":"新 墨",
+ "n21:1":"七 楼",
+ "n21:2":"第 十 三 条",
+ "n22:1":"那 就 不 烧 了",
+ "n22:2":"脚 步",
+ "n23:1":"一 寸",
+ "n23:2":"碗 筷",
+ "n24:1":"最 边 上",
+ "n24:2":"帮 不 了",
+ "n25:1":"五 层",
+ "n25:2":"没 有 五 楼",
+ "n26:1":"别 开 门",
+ "n27:1":"三 下",
+ "n27:2":"一 排",
+ "n28:1":"门 链",
+ "n28:2":"知 道 了",
+ "n29:1":"湿 脚 印",
+ "n29:2":"你 的 声 音",
+ "n30:1":"怎 么 才 回",
+ "n30:2":"四 零 七",
+ "n30b:1":"第 十 三 层",
+ "n30b:2":"楼 下",
+ "n31:1":"没 有 窗",
+ "n31:2":"还 差 谁",
+ "n32:1":"十 三 副",
+ "n32:2":"太 亮 了",
+ "n33:1":"谢 谢",
+ "n33:2":"上 一 任",
+ "n34:1":"慢 半 拍",
+ "n34:2":"关 着 的 门",
+ "n35:1":"温 的",
+ "n35:2":"河",
+ "n36:1":"两 下",
+ "n36:2":"头 发",
+ "n37:1":"这 位 观 众",
+ "n37:2":"这 间 客 厅",
+ "n38:1":"空 的",
+ "n38:2":"走 廊",
+ "n39:1":"一 直 穿 着",
+ "n39:2":"门 把 手",
+ "n40:1":"第 七 个",
+ "n40:2":"你 的 鞋",
+ "n41:1":"第 十 三 个",
+ "n41:2":"碎 片",
+ "n42:1":"多 出 来 的",
+ "n42:2":"旧 编 号",
+ "n43:1":"按 不 亮",
+ "n43:2":"亮 着 的 地 面",
+ "n44:1":"一 起",
+ "n44:2":"请",
+ "n45:1":"手 印",
+ "n45:2":"二 十 三 层",
+ "n46:1":"到",
+ "n46:2":"台 阶",
+ "n47:2":"换 鞋",
+ "n47:3":"数 门",
+ "n48a:1":"划 痕",
+ "n48b:1":"刻 痕"
+};
+const DTH={
+ /* 卷一 */
+ "n1:1":"你推门进去。铁门在身后自己合上，很轻，像有人替你带上门。你摸黑找开关，摸到了，按下去——灯没亮，倒是楼上有人替你数了一声：一。你倒在了 __T__。",
+ "n1:2":"对讲机响了两声，有人接了，说了句「上来吧」。你推门进去，走到电梯口，才看清面板上没有按钮，只有一张纸，纸上写着你的门牌号。你倒在了 __T__。",
+ "n2:1":"你拍了照就走。三条在相册里躺着，一条也没进脑子。后来你在电梯里抬头看楼层显示的时候，才想起第三条写的是什么——那时候已经来不及了。你倒在了 __T__。",
+ "n2:2":"你把纸揭下来。底下那张是一份名单，十三个名字，最后一个位置空着，墨还没干。你抬头，发现自己的手指也沾了一点。你倒在了 __T__。",
+ "n3:1":"你看他提着两袋，伸手去接。袋子很沉，沉得不像装着东西，倒像装着水。老人没松手，只是把袋口又捏紧了一点，然后低头看你——他没有脸。你倒在了 __T__。",
+ "n3:2":"你站着不动，等他下来。他一直没下来，电梯门也没关。过了很久你才明白，他不是在等你上来，是在等你进来。你倒在了 __T__。",
+ "n4:1":"你读到第六条就按了楼层。剩下的七条在墙上没有动，可电梯在你身后轻轻响了一声，像有人替你翻页。你到 6 层时，纸上已经空了。你倒在了 __T__。",
+ "n4:2":"你把纸揭下来折好。折到第三折时，纸自己弹开了，摊在你手上，第一条不见了。你抬头看墙——墙上是空的，但你明明还记得第一条写的是什么。你倒在了 __T__。",
+ "n5:1":"你按了开门。门开了。五层的走廊黑着，空着，地面上有一圈水，一直漫到电梯门槛。你下意识低头看鞋——鞋底已经粘住了。你倒在了 __T__。",
+ "n5:2":"你低头看手机，假装没注意。手机屏幕照亮了你的下巴，也照亮了门缝底下一双鞋尖。你看的时候，那双鞋尖挪了一下，正对着门。你倒在了 __T__。",
+ "n6:1":"「哎。」你应了一声。走廊很长，回声比你的声音多了一次。第二次那个不是回声——它比你先说完，还带着笑。你倒在了 __T__。",
+ "n6:2":"你转过身，正对着门。门在这时候开了，速度快得不像电梯。门外什么也没有，除了你自己的影子——它比我你先一步迈了进来。你倒在了 __T__。",
+ "n7:1":"你探出半个身子，想先看清走廊。头伸出去的那一下，走廊的灯全灭了。你缩不回来——不是有人拉你，是那半截身子已经不归你管了。你倒在了 __T__。",
+ "n7:2":"你按着开门键，等门自己关。它没关。三十秒后，从走廊那头走过来一个人，很自然地走进电梯，站在你旁边。他说：「你也住这层？」你倒在了 __T__。",
+ "n8:1":"你按了按那个空位。按钮没有，但指尖传来了「咔」的一声，很轻。电梯开始上行，面板上所有数字一起亮起来，然后一起灭掉。你倒在了 __T__。",
+ "n8:2":"你问了一句「为什么没有 7」。电梯里很安静，安静了大概三秒，然后有人在你耳边回答：「因为七层没有人按过。」声音是从面板里出来的。你倒在了 __T__。",
+ "n9:1":"你把钥匙抬高，用力拧。锁开了，但开得很轻，轻得像本来就开着。门内一片漆黑，你伸手去摸灯绳，摸到一半，黑暗里有人先说了一句：「回来了。」你倒在了 __T__。",
+ "n9:2":"你敲了三下门，问有人吗。门里立刻有人应：「有。」应得很快，快得像一直守在门后等着。你想走，脚已经不听使唤了。你倒在了 __T__。",
+
+ /* 卷二 */
+ "n10:1":"你把门拉开一条缝。走廊灯亮着，电梯停在你面前，门开着，里面站着十三个人，全是背影。他们同时往旁边让了让，空出一个位置。你倒在了 __T__。",
+ "n10:2":"你趴到猫眼上。猫眼外面是黑的，比走廊应该有的黑更黑。你贴近去看，黑暗里也有一只眼睛贴过来——它看得比你久。你倒在了 __T__。",
+ "n11:1":"你拉开门缝看是谁。走廊尽头站着一个穿消防服的人，浑身是水，正低头拧手里的水带。他抬头看见你，很疲惫地笑了一下：「还有人没下来？」你倒在了 __T__。",
+ "n11:2":"你拿起手机叫物业。电话通了，对面很吵，很多人在喊，还有人咳嗽。一个声音问你：「你在几楼？」你说 6 楼。对面安静了一下：「6 楼没人了。」你倒在了 __T__。",
+ "n12:1":"你问了一句「有人吗」。走廊里的气味忽然浓了，浓到你能尝出味道。有个声音从门缝底下贴着地面传进来：「有，我们都在。」然后门链自己滑开了。你倒在了 __T__。",
+ "n12:2":"你把门留了一条缝。缝里吹进来的风是热的，带着灰。你退了两步，缝里伸进来一只手，很稳地把门推开，动作很客气。你倒在了 __T__。",
+ "n13:1":"你开门下楼。电梯正好停在 6 层，门开着，里面全是水，水面很平，一点波纹都没有。你伸手按了关门，指尖碰到水面——它没有涟漪。你倒在了 __T__。",
+ "n13:2":"你给房东打电话。响了很久，接通了，背景音里有人在喊「这边还有人」，还有水声。他喘着气说：「你怎么还在里面？」你倒在了 __T__。",
+ "n14:1":"你抬头确认了显示，再走进去。显示是 6，但电梯里的按钮是 7 个。你数了两遍，都是 7 个。第三个按钮上写着 7，被磨得快看不见了。你倒在了 __T__。",
+ "n14:2":"你走楼梯下去。楼梯间的门一推开，里面堆满了烧焦的杂物，一直堆到天花板。你转身回去，门不见了。你倒在了 __T__。",
+ "n15:1":"你弯腰看他的脸。他很乖，没有躲。你看清了——校服是蓝白的，胸口绣着名字，是你的名字。你直起腰的时候，电梯里只剩你一个人，和一个空书包。你倒在了 __T__。",
+ "n15:2":"你反问他住几号楼。他没回答，只是慢慢转过身来。转过来的时候，你注意到他的校服背面也是蓝白的——前面和后面，是一样的。你倒在了 __T__。",
+ "n16:1":"你跺了两下脚。灯没亮，走廊尽头却亮了一下。有人听见了，从很远的地方往这边走，脚步很稳，一步比一步近。你倒在了 __T__。",
+ "n16:2":"你举起手机照亮，去找那个孩子。光扫过一圈，电梯里空的。你松了一口气，直到光扫过地面——地面上有两双脚的影子，一双是你的。你倒在了 __T__。",
+ "n17:1":"你跟着哼了一句。歌声停了，很礼貌地停下来，像是在等你说完。然后它换了一个调子，重新开始唱——这次唱的是你的名字，一个字一个字地唱。你倒在了 __T__。",
+ "n17:2":"你捂住耳朵，摸着墙往外走。手指碰到门，门是开的。你一步跨出去，脚下的地面很软，像灰，像很厚的灰。你想退回去，身后已经没有电梯了。你倒在了 __T__。",
+ "n18:1":"你打开了袋子。里面是叠好的一件外套，深灰色的，肩线很直。领口有一张纸条，写着你的尺码，写得很准。你把袋子放下的瞬间，外套已经在身上了。你倒在了 __T__。",
+ "n18:2":"你拎起袋子带回自己家。开门、换鞋、把袋子放在桌上——整套动作很顺，顺得像做过很多次。第二天早上，袋子空了，而你的衣柜里多了一件外套。你倒在了 __T__。",
+ "n19:1":"你冲他喊了一句「这里不能烧」。烧纸的人没回头，只是把手里那沓纸举高了一点，慢慢摊开给你看——每一张上面都写着一个名字，最后一张是空的。你倒在了 __T__。",
+ "n19:2":"你退回电梯。电梯门关得很快，快得不正常。面板上的按钮全都不见了，只剩一个向下的箭头，一直在亮。你倒在了 __T__。",
+
+ /* 卷三 */
+ "n20:1":"你问他这是烧给谁的。他终于抬起头，火光在他脸上晃：「住这栋楼的。」他顿了一下，补了一句，「也烧给你。」你倒在了 __T__。",
+ "n20:2":"你蹲下来，帮他一起烧。纸灰很轻，一直往你身上飞。你烧到第十几张，低头看见自己手里那张纸上写着名字——是你的，墨也是新的。你倒在了 __T__。",
+ "n21:1":"你问他搬走了吗。房东把手里最后一张纸放进火里，看着它卷起来：「搬走了。」他停了一下，「从七楼搬的。」七楼这两个字，他说得很轻。你倒在了 __T__。",
+ "n21:2":"你问他怎么了。他手上的动作停了，火苗低下去。他慢慢把脸转向你，那张脸在火光里很平：「跟你一样，读到第十三条了。」你倒在了 __T__。",
+ "n22:1":"你用脚踩灭了火。灰扑起来，落进你眼睛里。你揉着眼睛，听见有人在很近的地方叹了口气，然后说：「那就不烧了。」走廊的灯，一盏一盏灭下去。你倒在了 __T__。",
+ "n22:2":"你跟着他走。他走得不快，一直走到楼梯口才停，回头看你：「你跟着我做什么？」他说话的时候，楼梯间里还有二十几个人的脚步声，也一起停了。你倒在了 __T__。",
+ "n23:1":"你走过去，推了推那扇门。门没锁，往里开了一寸。里面传出一声很轻的响动，像有人从沙发上站起来。你下意识收回手——门却自己又开了一寸。你倒在了 __T__。",
+ "n23:2":"你当作看错了，转身回屋。钥匙插进锁孔，转到底，门开了。屋里灯亮着，桌上摆着一副碗筷，刚盛好的，还冒着热气。你倒在了 __T__。",
+ "n24:1":"你说好，问她孩子长什么样。她把照片递过来，照片上是十三个孩子，站成一排，背后是这栋楼。她指着最边上那个被烧掉的位置：「这个。」你倒在了 __T__。",
+ "n24:2":"你说帮不了，请她走。她点点头，很客气地退开一步，往墙边让。你开门进去，关门的时候听见她在门外很小声地重复了一句：「帮不了。」然后走廊里的灯开始一盏一盏灭。你倒在了 __T__。",
+ "n25:1":"你陪她坐电梯下去。电梯只到 6 层，你按了 6。门开的时候她先走出去，回头朝你招了招手。你跟着出去——5 层的走廊和 6 层一模一样，连你家门口那块水渍都在。你倒在了 __T__。",
+ "n25:2":"你说这楼没有五楼。她愣住了，很慢地抬起头，眼睛里没有眼白：「没有五楼？」她把照片攥紧了，「那我孩子是住在哪儿烧死的？」你倒在了 __T__。",
+ "n26:1":"你当场把纸展开。上面是一行字，写得很急，也是你的字迹：「别开门。」你抬头想问她——走廊尽头没有人，只有一扇门，门牌 405，门口放着一双你的鞋。你倒在了 __T__。",
+ "n27:1":"你问了一句「谁」。外面没有回答，只是又敲了三下，节奏一模一样。你意识到自己问了——规矩上写着不要问，而它现在知道你在门后了。门把手开始转。你倒在了 __T__。",
+ "n27:2":"你从猫眼往外看。走廊灯亮着，门外站着一排人，贴着墙站，从门口一直排到楼梯口，都低着头。排在最前面那个，正好站在猫眼正中央，这时抬起了头。你倒在了 __T__。",
+ "n28:1":"你用身体顶住门。门不动了，但锁芯还在转，一格，一格。转到最后，你听见门链在响——不是被拉，是有人在一点一点把它解开，手法很熟练。你倒在了 __T__。",
+ "n28:2":"你大喊「有人闯入」。整栋楼的声控灯全亮了，一层一层亮上来，亮得很整齐。然后有一个声音从每一层同时回答你：「知道了。」你倒在了 __T__。",
+ "n29:1":"你拉开门追出去。走廊里没有人，地上只有一串湿脚印，从你门口一直延伸到电梯口。追到电梯口你才看清——那串脚印没有回去的。你倒在了 __T__。",
+ "n29:2":"你朝门外喊回去。门外安静了一秒，然后有人用你的声音回答你，语气一模一样，连停顿的位置都一样：「不要开。」门开了。你倒在了 __T__。",
+ "n30:1":"你推门进去。屋里灯亮着，桌子靠着墙，沙发上坐着一个人，正在等你。他很自然地抬起头：「怎么才回。」你低头看自己的手，手里还提着垃圾袋。你倒在了 __T__。",
+ "n30:2":"你站着不动，等门牌变回来。它没有变。你等了很久，久到走廊的灯灭了一轮又亮了一轮。等你再抬头，门上的数字已经是 407 了。你倒在了 __T__。",
+ "n30b:1":"你一直数下去。十二层、十三层、十四层——对面那栋楼明明只有十二层。你数到第十三层时，那一层所有窗户同时亮了，每一扇窗后面都站着一个人，都朝着你这边。你倒在了 __T__。",
+ "n30b:2":"你推开窗，探头看楼下。楼下不是院子，是一段很长的走廊，和你现在站的这条一模一样，也是湿的，也堆着垃圾袋。走廊尽头有人正在烧纸。你倒在了 __T__。",
+ "n31:1":"你往下跑。跑到三层，喊声还在下面；跑到一层，喊声还在下面。你停下来喘气，才发现楼梯间的窗户外面全是黑的——不是夜，是那种没有窗外的黑。你倒在了 __T__。",
+ "n31:2":"你躲在拐角，不吭声。喊声一遍一遍地喊，名字一个一个地念，念到最后停住了，安静了两秒。然后那个声音换了个语气，很温和地问：「还差谁？」楼梯间的灯全灭了。你倒在了 __T__。",
+
+ /* 卷四 */
+ "n32:1":"你走到窗边看楼下。楼下没有火，只有一片空地，空地上一排担架，盖着白布。你数了数，十三副。你抬头，玻璃上有十三个人的倒影，其中一个是你的脸。你倒在了 __T__。",
+ "n32:2":"你把所有的灯都打开。灯全亮了，屋子亮得像白天。亮起来之后你才看清，墙上那把椅子上一直坐着一个人，他抬起头，眯着眼说：「太亮了。」你倒在了 __T__。",
+ "n33:1":"你把桌子挪回窗边。桌子很轻，轻得不像实木。挪到位的那一下，你听见很轻的一声：「谢谢。」声音是从桌子底下传上来的，很有礼貌。你倒在了 __T__。",
+ "n33:2":"你拍张照发给房东。照片发出去，转了半圈才发出去，信号只有一格。房东回了一条：「你屋里那张桌子，上一任租客也挪过。」你倒在了 __T__。",
+ "n34:1":"你点亮前置摄像头。屏幕里的你正在低头看手机，动作和你一模一样——只是慢了半拍。你放下手，屏幕里的你还举着；你再看时，它也放下了，然后对着镜头笑了一下。你倒在了 __T__。",
+ "n34:2":"你去卫生间照镜子。镜子里的一切都对，只有一件事不对：镜子里的浴室门是关着的，而你身后的门，明明是开的。你回头看了一眼。你倒在了 __T__。",
+ "n35:1":"你拧了一下试试。水出来了，很清，流得很急。你洗手的时候觉得不对——水是温的，温得像刚有人用过。你关不掉它，而水槽底下的排水口，正在往上冒头发。你倒在了 __T__。",
+ "n35:2":"你去关掉总阀。阀门在厨房角落，锈死了，你用尽全力才扳动。水声停了。停了两秒，然后从墙里传出来——整面墙都在流水，像墙那一侧是一条河。你倒在了 __T__。",
+ "n36:1":"你敲了两下管子。声音很闷，不像铁，像敲在什么软的东西上。停了一秒，管子那头也敲了两下，同样的力度，同样的间隔。然后又敲了三下。你倒在了 __T__。",
+ "n36:2":"你趴下去看水槽下面。柜子里很黑，有一股铁锈味。你打着手机往里照，看见管子上缠着一截头发，很长，一直往里延伸。你顺着看过去，黑暗里也有人顺着看回来。你倒在了 __T__。",
+ "n37:1":"你把声音调大。主播说到「13 人遇难」时忽然顿住，画面卡了一秒，然后他重新开口，念的是一个名字——念完抬头，正对着镜头，「这位观众，你也在楼里吗？」你倒在了 __T__。",
+ "n37:2":"你换了台。换过去还是这段新闻，同一帧。你又换，还是。你按下电源键，屏幕黑了一秒，然后自己亮起来，画面里是这间客厅，沙发上的你正拿着遥控器。你倒在了 __T__。",
+ "n38:1":"你凑近数屏幕里的担架。一、二、三……数到第十二副时，镜头扫过去，第十三副白布下面动了一下。你往回倒，倒到那一帧，白布已经掀开了，里面是空的。你倒在了 __T__。",
+ "n38:2":"你举起手机拍下来。拍完你回看相册，照片里的电视是黑屏的，什么都没有。你想再拍一张，抬头——电视里那个镜头已经换了，变成了这栋楼的走廊，镜头正在往前走，走向 405。你倒在了 __T__。",
+ "n39:1":"你试穿了一下。很合身，合身得像量身做的。袖口内侧绣着一行小字，你翻过来看，是你的名字，绣得很旧，像绣了很多年。你想脱下来，扣子找不到。你倒在了 __T__。",
+ "n39:2":"你把外套扔到门外。关门的时候听见它落地的声音，很轻。第二天早上你开门，外套挂在门把手上，叠得很整齐。你把它拿进来的那一下，樟脑味比昨晚浓了。你倒在了 __T__。",
+ "n40:1":"你凑近细看。照片上的人脸烧得只剩下半张，你一张一张地看过去，看到第七个时停住了——那张脸的轮廓你认得，你在电梯里见过他。他手里拿着两个塑料袋。你倒在了 __T__。",
+ "n40:2":"你想把烧掉的部分拼出来。你翻遍了外套的口袋，在夹层里摸到另一半，烧得很整齐，正好从中间裂开。你拼上去，最边上那个人露出来的第一件事，是他穿着你的鞋。你倒在了 __T__。",
+ "n41:1":"你挨个对照记忆，认出他们是谁。一楼门边的老人、电梯里的孩子、走廊上的老太太、烧纸的房东……你数到第十三个，才想起自己一直没在照片上看见自己的位置。你倒在了 __T__。",
+ "n41:2":"你把照片撕掉。撕成两半，四半，八半。碎片落在地上，你看着它们——每一片上的脸都在笑你，笑得很轻。你退后一步，踩到了其中一片。你倒在了 __T__。",
+ "n42:1":"你数第四次，一个一个点过去。数到一半，照片上有人开始动，慢慢地转过头来看你。你继续数，数到最后，发现多出来的那个人，站在队伍最右边，正低着头看你的鞋。你倒在了 __T__。",
+ "n42:2":"你拿笔在照片背后标号。标到第七个，笔尖断了。你换了支笔继续，标到第十三个时，发现照片背后本来就有一排编号，字迹是你的，比你现在写的还旧。你倒在了 __T__。",
+
+ /* 卷五 */
+ "n43:1":"你直接按了电梯。门开得很快，像一直在等你。里面很干净，灯很亮，楼层显示是 6。你走进去，按了 1——按钮弹回来，没亮。你再按，还是没亮。你倒在了 __T__。",
+ "n43:2":"你去阳台看天。天确实亮了，只是亮的方向不对——光从楼下往上照，照亮了对面楼的背面。你低头看，楼下那条街在发光，亮得像一条灯管。你倒在了 __T__。",
+ "n44:1":"你走进去。十三个人很自然地让开，中间刚好站得下一个人。门关上，你抬手想按 1 层，才发现面板上没有按钮——从来就没有。你倒在了 __T__。",
+ "n44:2":"你客气了一句「你们先下」。他们没有动，只是同时把头偏向你这边。最靠门的那个人很礼貌地抬手，做了一个「请」的姿势：「一起。」你倒在了 __T__。",
+ "n45:1":"你数出声来。数到六，你又看见 6 层的牌子；数到十二，还是 6 层。你换了种数法，从一百往下数——数到六十三的时候，楼梯间的墙上多了一双手印，是你自己的。你倒在了 __T__。",
+ "n45:2":"你停下来，看窗外是第几层。窗外的对面楼，每一层都亮着灯，一层一层望不到底。你数了数自己这一层——从下往上二十三层。这栋楼只有六层。你倒在了 __T__。",
+ "n46:1":"你答应了一声。楼下的名单立刻停了，停了大概一秒，然后重新开始念——这次从第一个念起，念得很快，念到最后，念出了你的名字，还补了一句：「到。」那个「到」不是你答的。你倒在了 __T__。",
+ "n46:2":"你停住脚步，等他们念完。念完最后一个名字，楼下安静了。你想继续走，脚抬不起来——楼梯上的每一级台阶都在往下沉，沉得很慢，像整栋楼在往下陷。你倒在了 __T__。",
+ "n47:2":"你转身回楼里找别的出口。楼道里很亮，比刚才亮，一层一层都亮着。你走到 6 层，门开着，门口放着你的鞋。你低头换鞋的时候，才发现自己已经很久没有脚了。你倒在了 __T__。",
+ "n47:3":"你用肩膀去撞门。铁门发出很闷的一声，纹丝不动。第二下，第三下，门没开，但楼道里有人开始数了：「一、二、三……」数得和你撞门一样快。你倒在了 __T__。",
+ "n48a:1":"你回头看了一眼这栋楼。天已经全亮了，楼很旧，外墙上有一片深色的痕迹，从七层一直烧到三层。你数了数窗户——六层。可你昨晚住的，明明是有一层叫 405 的地方。你倒在了 __T__。",
+ "n48b:1":"你回头看了一眼这栋楼。铁门上密密麻麻全是划痕，不只是你刻的十三条，还有很多别人的字迹，一层盖一层。最上面那一层，刻的是你的名字，刻得很深，刻痕还是新的。你倒在了 __T__。"
+};
+</script>
+
+<script>
+let step=0,prevV=0,volStart="n1",volStep=1,pending="n1",rank="",curTime="02:11",flags={},unlocked=3;
+const $=id=>document.getElementById(id);
+const cover=$("cover"),chapter=$("chapter"),scene=$("scene"),end=$("end");
+const SAVE_KEY="mnr_save_v1";
+function save(st){try{st.step=step;st.prevV=prevV;st.volStart=volStart;st.volStep=volStep;
+  st.pending=pending;st.curTime=curTime;st.flags=flags;st.unlocked=unlocked;
+  localStorage.setItem(SAVE_KEY,JSON.stringify(st));}catch(e){}}
+function clearSave(){try{localStorage.removeItem(SAVE_KEY);}catch(e){}}
+function restore(){let s=null;try{s=JSON.parse(localStorage.getItem(SAVE_KEY));}catch(e){}
+  if(!s||s.screen==="cover")return;
+  hide(cover);                     /* 关键：不隐藏封面，恢复后会封面压着场景 */
+  step=s.step||0;prevV=s.prevV||0;volStart=s.volStart||"n1";volStep=s.volStep||1;
+  pending=s.pending||"n1";curTime=s.curTime||"02:11";flags=s.flags||{};unlocked=s.unlocked||3;
+  updateEp();renderDots();paintRules();
+  if(s.screen==="scene")paintScene(s.node);
+  else if(s.screen==="chapter")showChapter(s.node);
+  else if(s.screen==="end")showEnd(s.endId,s.key);}
+function show(e){e.classList.remove("hide");} function hide(e){e.classList.add("hide");}
+function renderDots(){const d=$("dots");d.innerHTML="";VOLS.forEach((_,k)=>{if(k<1)return;
+  const i=document.createElement("i");if(k<=prevV)i.className="on";d.appendChild(i);});}
+function updateEp(){const total=50;   /* 节点 51 个，但 n48a/n48b 只会走一个 */
+  $("ep").textContent=`${curTime} · 第 ${step} / ${total} 幕`;$("bar").style.width=(step/total*100)+"%";}
+function toast(msg){const t=document.createElement("div");t.className="toast";t.textContent=msg;
+  document.body.appendChild(t);setTimeout(()=>t.remove(),1900);}
+/* 住户须知抽屉 */
+function paintRules(){
+  const ol=$("ruleList");ol.innerHTML="";
+  RULES.forEach((r,i)=>{const li=document.createElement("li");
+    if(i<unlocked){li.textContent=r;}else{li.className="lock";li.textContent="？？？？？？";}
+    ol.appendChild(li);});
+  $("ruleSign").textContent=unlocked>=13?"—— 物业 · 1998 年 11 月":"—— 其余 "+(13-unlocked)+" 条尚未解锁";
+}
+$("ruleBtn").onclick=()=>{$("drawer").scrollTop=0;$("drawer").classList.add("on");};
+$("drawerClose").onclick=()=>{$("drawer").classList.remove("on");};
+$("drawer").onclick=e=>{if(e.target.id==="drawer")$("drawer").classList.remove("on");};
+
+function go(id){
+  const n=NODES[id];if(!n)return;
+  curTime=n.t||curTime;
+  if(RULE_UNLOCK[id]&&RULE_UNLOCK[id]>unlocked){
+    unlocked=RULE_UNLOCK[id];paintRules();
+    toast("住户须知 · 已读到第 "+unlocked+" 条");
+  }
+  if(n.v!==prevV){prevV=n.v;volStart=id;volStep=step+1;pending=id;showChapter(id);return;}
+  step++;updateEp();renderDots();paintScene(id);
+}
+function showChapter(id){const n=NODES[id];const v=VOLS[n.v];
+  $("cVol").textContent=v[0];$("cTitle").textContent=v[1];$("cIntro").textContent=v[2];
+  updateEp();renderDots();hide(scene);hide(end);show(chapter);save({screen:"chapter",node:id});}
+function paintScene(id){const n=NODES[id];
+  const v=VOLS[n.v];$("where").textContent=`${n.t} · ${n.where}`;$("story").textContent=n.story;
+  const shuf=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
+  const box=$("opts");box.innerHTML="";
+  const list=n.o.map((op,i)=>({op,i})).filter(({op})=>{
+    if(!op.need)return true;
+    return [].concat(op.need).every(k=>!!flags[k]);
+  });
+  shuf(list).forEach(({op,i})=>{const b=document.createElement("button");b.className="opt";b.textContent=op.t;
+    b.onclick=()=>{
+      if(op.give){flags[op.give]=1;}
+      if(op.end)showEnd(op.end,id+":"+i);else go(op.go);
+    };box.appendChild(b);});
+  updateEp();hide(chapter);hide(end);show(scene);window.scrollTo(0,0);
+  save({screen:"scene",node:id});}
+function showEnd(id,key){const e=END[id];if(!e)return;
+  const txt=((key&&DTH[key])||e.text).replace(/__N__/g,step).replace(/__T__/g,curTime);
+  end.className="end "+e.type;$("endTag").textContent=e.type==="die"?"你 死 了":"结 局";
+  $("endBig").textContent=(key&&typeof DTH_TITLE!=="undefined"&&DTH_TITLE[key])||e.title;$("endReason").textContent=txt;
+  $("endShare").textContent=e.type==="die"
+    ?`📌 你倒在了 ${curTime}，第 ${step} 幕。转给朋友，看他能撑到几点。`
+    :`📌 你走到了结局「${e.title}」，一共 ${step} 幕。截图发出去，看看别人走的是哪条路。`;
+  hide(scene);hide(chapter);show(end);window.scrollTo(0,0);save({screen:"end",endId:id,key:key});}
+
+$("startBtn").onclick=()=>{clearSave();step=0;prevV=0;volStart="n1";volStep=1;
+  flags={};unlocked=3;paintRules();hide(cover);go("n1");};
+$("cGo").onclick=()=>{go(pending);};
+$("againBtn").onclick=()=>{clearSave();step=0;prevV=0;volStart="n1";volStep=1;
+  flags={};unlocked=3;curTime="02:11";paintRules();hide(end);hide(chapter);show(cover);};
+$("rechBtn").onclick=()=>{step=volStep-1;go(volStart);};
+
+paintRules();
+restore();
+</script>
+</body>
+</html>
